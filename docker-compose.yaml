@@ -1,0 +1,45 @@
+version: "3.3"
+services:
+  epam_nginx:
+        container_name: epam_nginx
+        image: epam_nginx:my
+        deploy:
+            resources:
+                limits:
+                  cpus: '0.50'
+                  memory: 512M               
+        networks:
+          net_nginx:
+            ipv4_address: 172.21.0.2
+        ports:
+          - "8080:8080"
+        volumes:
+          - './epam_volume:/var/www/html/'
+  epam_apache:
+        container_name: epam_apache
+        image: epam_apache:my
+        deploy:
+            resources:
+                limits:
+                  cpus: '0.50'
+                  memory: 512M
+        networks:
+          net_apache:
+            ipv4_address: 172.22.0.2
+        networks:
+          - net_apache
+        ports:
+          - "80:80"
+        volumes:
+          - './epam_volume:/var/www/html/'
+networks:
+  net_nginx:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/24
+  net_apache:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.22.0.0/24
